@@ -44,12 +44,14 @@ DATA_DICT = {'roiNumber' : int,
               'SignalMean' : float,
               'SignalMeanError' : float}
 
-FIBER_POS_DICT = {'roi_number' : float,
+ROI_POS_DICT = {'roi_number' : float,
               'radius' : float,
               'y_position' : int, 
               'x_position' : int}
 
 
+MAGNIFICATION_DICT = {'magnification' : float,
+              'magnificationErr' : float}
 
 
 def parse_config_file(file_path, info_dictionary):

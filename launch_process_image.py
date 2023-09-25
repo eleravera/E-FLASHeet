@@ -16,7 +16,7 @@ if __name__ == "__main__":
     roi_radius = options['radius']
 
     fiberPositionsFile = utils.search_file_in_directory(directoryPath, '/fiberPositions.txt')
-    pos = utils.parse_config_file(fiberPositionsFile, utils.FIBER_POS_DICT)
+    pos = utils.parse_config_file(fiberPositionsFile, utils.ROI_POS_DICT)
     infoFile = utils.search_file_in_directory(directoryPath, '/info*.txt')
     info = utils.parse_config_file(infoFile, utils.DTYPE_DICT)
     
