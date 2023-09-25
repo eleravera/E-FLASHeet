@@ -31,7 +31,7 @@ class Image:
         if bounds==(None, None):
             vmin, vmax = np.quantile(self.image, [0.02, 0.98])
         else: 
-            vmin=bounds[0]
+            vmin=bounds[0] 
             vmax=bounds[1]
         fig, ax = plt.subplots(1,1, figsize=(8,8))
         bins = np.linspace(int(vmin)-0.5, int(vmax)-0.5, min(int(vmax)-int(vmin)+1, 100))
