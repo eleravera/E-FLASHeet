@@ -38,14 +38,14 @@ else:
 image.savePlot(pdf, image.plotImage(bounds=(None, None)), title ='Image')
 
 if darkFile is not None: 
-    info = "DATA: %s\n\nBUIO: %s\n\nROI POSITIONS: %s" % (inputFile, darkFile, cordinatesFile )
+    info = "Directory: %s\n\nDATA: %s\n\nBUIO: %s\n\nROI POSITIONS: %s" % (os.path.dirname(inputFile), os.path.basename(inputFile), os.path.basename(darkFile), os.path.basename(cordinatesFile) )
     dark = lib.Image_lib.Image(darkFile)
     signalImage = image.image - dark.image
     errorImage = image.image + dark.image
     image.savePlot(pdf, dark.plotImage(bounds=(None, None)), title = 'Dark')
     #image.savePlot(pdf, signalImage.plotImage(bounds=(None, None)), title = 'Signal = Image-Dark')
 else:
-    info = "DATA: %s\n\nROI POSITIONS: %s" % (inputFile, cordinatesFile )
+    info = "Directory: %s\n\nDATA: %s\n\nROI POSITIONS: %s" % (os.path.abspath(inputFile), os.path.basename(inputFile), os.path.basename(cordinatesFile) )
     signalImage = image.image
     errorImage  = signalImage
 
