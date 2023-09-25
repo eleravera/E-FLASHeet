@@ -7,14 +7,14 @@ DEFAULT_ROI_RADIUS = 10
 
 class Roi:
 
-    def __init__(self, image, number=1, center=(0,0), radius= DEFAULT_ROI_RADIUS):
+    def __init__(self, image, errorImage, number=1, center=(0,0), radius= DEFAULT_ROI_RADIUS):
         self.number = number
         self.roiCenter = center
         self.roiRadius = radius
         self.squaredImage = self.makeSquaredROI(image)
         self.circularROI = self.makeCiruclarROI(image)
         self.signalIntegral = self.signalIntegral()
-        self.signalIntegralError = self.signalIntegralError()
+        self.signalIntegralError = self.signalIntegralError(errorImage)
         self.signalMean = self.signalMean()
         self.signalStdev = self.signalStdev()
         self.signalMeanError = self.signalMeanError()
@@ -75,8 +75,11 @@ class Roi:
     def signalIntegral(self): 
         return np.sum(self.circularROI)
 
-    def signalIntegralError(self): 
-        return np.sqrt(np.sum(self.circularROI[self.circularROI>1]))
+    def signalIntegralError(self, errorImage): 
+        #return np.sqrt(np.sum(self.circularROI[self.circularROI>1]))
+        errorCiruclarROI= self.makeCiruclarROI(errorImage)
+        return np.sqrt(np.sum(errorCiruclarROI[errorCiruclarROI>0]))
+
 
     def signalMean(self): 
         return np.mean(self.circularROI)

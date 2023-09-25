@@ -41,13 +41,13 @@ if darkFile is not None:
     info = "DATA: %s\n\nBUIO: %s\n\nROI POSITIONS: %s" % (inputFile, darkFile, cordinatesFile )
     dark = lib.Image_lib.Image(darkFile)
     signalImage = image.image - dark.image
+    errorImage = image.image + dark.image
     image.savePlot(pdf, dark.plotImage(bounds=(None, None)), title = 'Dark')
     #image.savePlot(pdf, signalImage.plotImage(bounds=(None, None)), title = 'Signal = Image-Dark')
 else:
     info = "DATA: %s\n\nROI POSITIONS: %s" % (inputFile, cordinatesFile )
     signalImage = image.image
-
-#signalImage = medfilt2d(signalImage,  kernel_size=[3,3])
+    errorImage  = signalImage
 
 
 image.saveSomeInfo(pdf, info)
@@ -56,7 +56,7 @@ txt.write("#roiNumber roiRadius pixelNumber SignalIntegral SignalIntegralError S
 data = []
 
 for n, x, y, r in zip(pos['roi_number'], pos['x_position'], pos['y_position'], pos['radius']):
-    roi = roi_lib.Roi(signalImage, number=n, center = (x, y), radius= int(r))
+    roi = roi_lib.Roi(signalImage, errorImage, number=n, center = (x, y), radius= int(r))
     data.append(roi.ROIanalysis())
     roi.saveInfo(outputFilePdf=pdf, outputFileTxt=txt)
     roi.savePlot(pdf, roi.plotImage())
