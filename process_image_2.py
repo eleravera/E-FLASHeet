@@ -10,7 +10,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import utilities.utilities as utils
 import lib.Image_lib
 
-EXTENT = [118, 333, 185, 400]
+#EXTENT = [118, 333, 185, 400]
+EXTENT = [0, 512, 0, 512]
 
 if __name__ == "__main__":
 
@@ -19,8 +20,6 @@ if __name__ == "__main__":
     options = vars(options_parser.parse_args())
     directoryPath = options['input_directory']
 
-    magnificationFile = utils.search_file_in_directory(directoryPath, '/magnification.txt')
-    mInfo = utils.parse_config_file(magnificationFile, utils.MAGNIFICATION_DICT )
     infoFile = utils.search_file_in_directory(directoryPath, '/info*.txt')
     info = utils.parse_config_file(infoFile, utils.DTYPE_DICT)
     
@@ -48,7 +47,7 @@ if __name__ == "__main__":
       mean = np.mean(images[doses==d], axis=0) 
       meanImages.append(mean[EXTENT[0]:EXTENT[1], EXTENT[2]:EXTENT[3]])
 
-    outputFile = '/home/eleonora/Scrivania/FLASH_2023_06_29/pdd/outputFiles/PDD.npz'
+    outputFile = '/home/eleonora/Scrivania/FLASH_2023_06_29/linearità_2/outputFiles/beamProfile.npz'
     np.savez(outputFile, images =meanImages, doses=uniqueDoses )
 
     #SALVA SU FILE IN OUTPUTDIRECTORYY
