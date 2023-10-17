@@ -47,7 +47,7 @@ if __name__ == "__main__":
       mean = np.mean(images[doses==d], axis=0) 
       meanImages.append(mean[EXTENT[0]:EXTENT[1], EXTENT[2]:EXTENT[3]])
 
-    outputFile = '/home/eleonora/Scrivania/FLASH_2023_06_29/linearità_2/outputFiles/beamProfile.npz'
+    outputFile = '/home/eleonora/FLASH-Scintillators/Flash_2023_06_30/open/outputFiles/beamProfile.npz'
     np.savez(outputFile, images =meanImages, doses=uniqueDoses )
 
     #SALVA SU FILE IN OUTPUTDIRECTORYY

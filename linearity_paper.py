@@ -53,11 +53,15 @@ def getData(directoryPath, MIN_DOSE= 0, MAX_DOSE=10):
 #linearità_2
 linearity = '/home/eleonora/Scrivania/FLASH_2023_06_29/linearità_2/'
 
+#linearità_2_filter
+linearity_filter = '/home/eleonora/Scrivania/FLASH_2023_06_29/linearità_2/filter/'
+
 #linearità
 linearity_short = '/home/eleonora/Scrivania/FLASH_2023_06_29/linearità/'
 
 
 signal, signalErr, doses, dosesErr = getData(linearity)
+signal_filter, signalErr_filter, doses_filter, dosesErr_filter = getData(linearity_filter)
 signal_short, signalErr_short, doses_short, dosesErr_short = getData(linearity_short)
 
 
@@ -66,6 +70,13 @@ print('OPT PRIMA: ', opt)
 sigma = np.sqrt(signalErr**2 + (opt[0]*dosesErr)**2)
 opt, pcov = curve_fit(utils.line, doses, signal, sigma = sigma)
 print('OPT DOPO: ', opt)
+
+
+opt_filter, pcov_filter = curve_fit(utils.line, doses_filter, signal_filter, sigma = signalErr_filter)
+print('OPT PRIMA: ', opt_filter)
+sigma_filter = np.sqrt(signalErr_filter**2 + (opt_filter[0]*dosesErr)**2)
+opt_filter, pcov_filter = curve_fit(utils.line, doses_filter, signal, sigma = sigma_filter)
+print('OPT DOPO: ', opt_filter)
 
 opt_short, pcov_short = curve_fit(utils.line, doses_short, signal_short, sigma = signalErr_short)
 print('OPT PRIMA: ', opt)
@@ -85,12 +96,17 @@ fig.subplots_adjust(top=0.95)
 ax[0].errorbar(doses, signal, xerr=dosesErr, yerr = signalErr, fmt = 'o', fillstyle='none', markersize=9.,markeredgewidth=1.5, color='mediumblue', label = 'Roi 70 pixel')
 ax[0].errorbar(doses_short, signal_short, xerr=dosesErr_short, yerr = signalErr_short, fmt = 'o', fillstyle='none', markersize=9.,markeredgewidth=1.5, color='green', label = 'Roi 70 pixel')
 
+ax[0].errorbar(doses_filter, signal_filter, xerr=dosesErr_filter, yerr = signalErr_filter, fmt = 'o', fillstyle='none', markersize=9.,markeredgewidth=1.5, color='red', label = 'filtro')
+
+
 my_x =  np.linspace(doses.min(), doses.max(), 1000)
 ax[0].errorbar(my_x, utils.line(my_x, *opt), fmt = '--', color='cornflowerblue', alpha = 0.5)
 ax[0].errorbar(my_x, utils.line(my_x, *opt_short), fmt = '--', color='limegreen', alpha = 0.5)
+ax[0].errorbar(my_x, utils.line(my_x, *opt_filter), fmt = '--', color='salmon', alpha = 0.5)
 
 ax[1].errorbar(doses, (signal-utils.line(doses, *opt))/signalErr, fmt='o', fillstyle='none', color='mediumblue', markersize=9,markeredgewidth=1.5)
 ax[1].errorbar(doses_short, (signal_short-utils.line(doses_short, *opt_short))/signalErr_short, fmt='o', fillstyle='none', color='green', markersize=9,markeredgewidth=1.5)
+ax[1].errorbar(doses_filter, (signal_filter-utils.line(doses_filter, *opt_filter))/signalErr_filter, fmt='o', fillstyle='none', color='red', markersize=9,markeredgewidth=1.5)
 
 ax[1].errorbar(my_x, utils.line(my_x, 0, 0), fmt='--', color ='darkgray')
 ax[1].set(xlabel = 'Dose per pulse [Gy]', ylabel='Residuals [$\sigma$]')

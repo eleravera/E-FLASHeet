@@ -1,9 +1,10 @@
 from scipy.special import erf
 import numpy as np
 
-def err_func(x, norm, mean, sigma):
+def err_func(x, norm, mean, sigma, constant):
     z = (x - mean)/sigma
-    return norm * 0.5 * (1 + erf(z/np.sqrt(2)))
+    return norm * 0.5 * (1 + erf(z/np.sqrt(2)))+ np.ones(len(x))*constant
+
 
 def exponential(x, norm, att): 
     return norm*np.exp(-x*att)

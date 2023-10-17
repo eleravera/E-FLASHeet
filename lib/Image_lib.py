@@ -14,8 +14,9 @@ class Image:
     #Deve essere eseguita sempre, per estrarre l'immagine
     def openImage(self):
         im = PIL_Image.open(self.inputFile)
-        return np.array(im, dtype= np.int64)
-    
+        arr = np.asarray(im.getdata()).reshape(im.size[1], im.size[0])
+        return arr#np.array(im, dtype= np.int64)
+        
     def plotImage(self, bounds=(None, None)):
         if bounds==(None, None):
             vmin, vmax = np.quantile(self.image, [0.02, 0.98])
@@ -53,9 +54,9 @@ class Image:
         return 
 
     def saveSomeInfo(self, outputFilePdf, someInfo):
-        firstPage = plt.figure(figsize=(11.69, 8.27))
-        firstPage.clf()
-        firstPage.text(0.1,0.1, someInfo, size=22)
+        page = plt.figure(figsize=(11.69, 8.27))
+        page.clf()
+        page.text(0.1,0.1, someInfo, size=22)
         outputFilePdf.savefig()
         return 
 

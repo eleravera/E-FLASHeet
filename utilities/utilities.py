@@ -51,7 +51,8 @@ ROI_POS_DICT = {'roi_number' : float,
 
 
 MAGNIFICATION_DICT = {'magnification' : float,
-              'magnificationErr' : float}
+              'magnificationErr' : float, 
+              'angle': float}
 
 
 def parse_config_file(file_path, info_dictionary):

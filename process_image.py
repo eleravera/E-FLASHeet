@@ -22,7 +22,7 @@ cordinatesFile = options['cordinates']
 inputFile = options['input_file']
 darkFile = options['dark_file']
 
-pos = utils.parse_config_file(cordinatesFile, utils.FIBER_POS_DICT)
+pos = utils.parse_config_file(cordinatesFile, utils.ROI_POS_DICT)
 
 image = lib.Image_lib.Image(inputFile)
 print("Processing input file: %s" % inputFile)
@@ -31,7 +31,7 @@ if darkFile is not None:
     print(image.createOutputFile("pdf", path=os.path.dirname(inputFile)+"/outputFiles/dSub_"))
     pdf = PdfPages(image.createOutputFile("pdf", path=os.path.dirname(inputFile)+"/outputFiles/dSub_"))
     txt = open(image.createOutputFile("txt", path=os.path.dirname(inputFile)+"/outputFiles/dSub_"),'a')
-else:
+else: 
     print(image.createOutputFile("pdf", path=os.path.dirname(inputFile)+"/outputFiles/"))
     pdf = PdfPages(image.createOutputFile("pdf", path=os.path.dirname(inputFile)+"/outputFiles/"))
     txt = open(image.createOutputFile("txt", path=os.path.dirname(inputFile)+"/outputFiles/"),'a')
@@ -55,6 +55,12 @@ image.saveSomeInfo(pdf, info)
 txt.write("#roiNumber roiRadius pixelNumber SignalIntegral SignalIntegralError SignalMean SignalMeanError \n")
 data = []
 
+"""
+inputFile_npz  =  os.path.dirname(inputFile)+'/'+os.path.basename(inputFile)[:-3]+'npz'
+im =  np.load(inputFile_npz)
+signalImage = im['image']
+errorImage  = signalImage
+"""
 for n, x, y, r in zip(pos['roi_number'], pos['x_position'], pos['y_position'], pos['radius']):
     roi = roi_lib.Roi(signalImage, errorImage, number=n, center = (x, y), radius= int(r))
     data.append(roi.ROIanalysis())
