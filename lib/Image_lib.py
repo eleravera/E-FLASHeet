@@ -102,3 +102,11 @@ class Image:
     def readCalibrationFactors(self, calibrationFile):
         f, calFactors, calFactorsErr = np.loadtxt(calibrationFile, unpack=True) 
         return f, calFactors, calFactorsErr
+
+    def saveImageAsTIF(self, outputFile, image=None):
+        if image is not None: 
+            im = PIL_Image.fromarray(image.astype(np.uint16))
+        else: 
+            im = PIL_Image.fromarray(self.image.astype(np.uint16))
+        im.save(outputFile)
+        return 
