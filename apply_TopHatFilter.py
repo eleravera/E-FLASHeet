@@ -16,9 +16,9 @@ filterSize = options['filter_order']
 infoFile = utils.search_file_in_directory(directoryPath, '/info*.txt')
 info = utils.parse_config_file(infoFile, utils.DTYPE_DICT)
 
-for inputFile in zip(info['data_file']):
+for inputFile in info['data_file']:
     inputFile = directoryPath + inputFile
-    darkFile = directoryPath + darkFile
+    #darkFile = directoryPath + darkFile
 
     image = lib.Image_lib.Image(inputFile)
     filter = white_tophat(image.image, size=(filterSize,filterSize))

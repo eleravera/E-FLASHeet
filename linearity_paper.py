@@ -59,7 +59,7 @@ def doFit(x, y, dx, dy):
 
 def createFig(): 
   fig, ax = plt.subplots(3,1, sharex=True, figsize=(9,10), gridspec_kw={'height_ratios': [4,2,2]})
-  fig.subplots_adjust(hspace=0.06)
+  fig.subplots_adjust(hspace=0.08)
   fig.subplots_adjust(left=0.2)
   fig.subplots_adjust(right=0.92)
   fig.subplots_adjust(bottom=0.2)
@@ -75,9 +75,14 @@ def doPlotPerAROI(doses, dosesErr, signal, signalErr, doses_filter, dosesErr_fil
   ax[0].errorbar(my_x, utils.line(my_x, *opt), fmt = '--', color='cornflowerblue', alpha = 0.5)
   ax[0].errorbar(my_x, utils.line(my_x, *opt_filter), fmt = '--', color='salmon', alpha = 0.5)
 
+  ax[0].set_ylim(0)
+
   #residuals for signal, filtered signal, background, filtered background
   ax[1].errorbar(doses, (signal-utils.line(doses, *opt))/signalErr, fmt='o', fillstyle='none', color='mediumblue', markersize=9,markeredgewidth=1.5)
   ax[1].errorbar(doses_filter, (signal_filter-utils.line(doses_filter, *opt_filter))/signalErr_filter, fmt='o', fillstyle='none', color='red', markersize=9,markeredgewidth=1.5)
+
+  ax[1].set_ylim(-150, +150)
+
 
   #difference signal-filtered signal, background-filtered background
   normDifference = (signal-signal_filter)/(signal+signal_filter) *2 * 100
@@ -94,18 +99,18 @@ if __name__ == "__main__":
   linearity = '/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/'
 
   #linearità_2_filter
-  linearity_filter = '/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/filter/'
+  linearity_filter = '/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/3_filter/'
 
   #linearità
   linearity_short = '/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità/'
   
   fig, ax = createFig()
 
-  signal, signalErr, doses, dosesErr = getData(linearity, roi_selected=1.0)
+  signal, signalErr, doses, dosesErr = getData(linearity, roi_selected=1.0, MIN_DOSE= 0.5)
   print('fit signal unfiltered')
   opt_signal = doFit(doses, signal, dosesErr, signalErr)
   
-  signal_filter, signalErr_filter, doses_filter, dosesErr_filter = getData(linearity_filter, roi_selected=1.0)
+  signal_filter, signalErr_filter, doses_filter, dosesErr_filter = getData(linearity_filter, roi_selected=1.0, MIN_DOSE= 0.5)
   print('fit signal filtered')
   opt_signal_filter = doFit(doses_filter, signal_filter, dosesErr, signalErr_filter)
 
@@ -126,18 +131,18 @@ if __name__ == "__main__":
   secondary_x_axis = ax[1].secondary_xaxis(-1.65, functions=(my_func_for_axis,my_func_for_axis), color='k')
   secondary_x_axis.set_xlabel('Intra-pulse dose rate [MGy/s]', color='k' ) # da mettere gray 
   
-  fig.savefig(outputDir+'linearity_signal.pdf')
+  #fig.savefig(outputDir+'linearity_signal.pdf')
 
   ####################################################################################################
   #background
   fig, ax = createFig()
-  print('BACKGROUND ')
+  print('\nBACKGROUND ')
 
-  signal, signalErr, doses, dosesErr = getData(linearity, roi_selected=2.0)
+  signal, signalErr, doses, dosesErr = getData(linearity, roi_selected=2.0, MIN_DOSE= 0.5)
   print('fit background unfiltered')
   opt_signal = doFit(doses, signal, dosesErr, signalErr)
   
-  signal_filter, signalErr_filter, doses_filter, dosesErr_filter = getData(linearity_filter, roi_selected=2.0)
+  signal_filter, signalErr_filter, doses_filter, dosesErr_filter = getData(linearity_filter, roi_selected=2.0, MIN_DOSE= 0.5)
   print('fit backgorund filtered')
   opt_signal_filter = doFit(doses_filter, signal_filter, dosesErr, signalErr_filter)
 
@@ -158,7 +163,7 @@ if __name__ == "__main__":
   secondary_x_axis = ax[1].secondary_xaxis(-1.65, functions=(my_func_for_axis,my_func_for_axis), color='k')
   secondary_x_axis.set_xlabel('Intra-pulse dose rate [MGy/s]', color='k' ) # da mettere gray 
   
-  fig.savefig(outputDir+'linearity_background.pdf')
+  # fig.savefig(outputDir+'linearity_background.pdf')
 
   """
   signal_short, signalErr_short, doses_short, dosesErr_short = getData(linearity_short)

@@ -4,7 +4,6 @@ from scipy.optimize import curve_fit
 from scipy.stats import chisquare
 from matplotlib.colors import LogNorm
 
-import lib.utilities as utilities
 
 def set_plot(xlabel, ylabel, title = '', grid =False, legend = False):
     """ Set the format of the plot

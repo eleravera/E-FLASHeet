@@ -20,7 +20,7 @@ low_dose_05mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/Flash_2023_0
                  "darkFile" :  "/home/eleonora/FLASH-Scintillators/Flash_2023_06_30/open/t0008.TIF", 
                  "dose" : 0.07, #Gy
                  "mm" : 0.5 , 
-                 'imBounds' : [0, 3000], 
+                 'imBounds' : [0, 2000], 
                  'histBounds': [0, 15000],
                  'name' : 'low_dose_05mm',
                  'xticks' : np.arange(0, 16000, 5000) }
@@ -58,6 +58,7 @@ outputDir = '/home/eleonora/Dottorato/articolo_foglio/Figures/Matherials_and_met
 
 
 #0.5 mm
+
 for dict in (low_dose_05mm, high_dose_05mm):
 
   inputFile = dict['inputFile']
@@ -90,7 +91,14 @@ for dict in (low_dose_05mm, high_dose_05mm):
   ax.set_xticks(dict['xticks'])
   plt.savefig(outputDir+'Hist_'+dict['name']+'.pdf')
 
+  
+
+
+
+
+
 #3 mm
+"""
 for dict in (low_dose_3mm, high_dose_3mm):
 
   inputFile = dict['inputFile']
@@ -123,5 +131,20 @@ for dict in (low_dose_3mm, high_dose_3mm):
   ax.set_xticks(dict['xticks'])
   plt.savefig(outputDir+'Hist_'+dict['name']+'.pdf')
 
+  median3x3 = medfilt2d(signalImage,  kernel_size=[3,3])
+  tophat3x3 = signalImage- white_tophat(signalImage, size=(3,3))
 
+  fig_3x3median, ax_3x3median = createFig()
+  ax_3x3median.set(xlabel='', title ='median')
+  im = ax_3x3median.imshow(median3x3[370:470, 100:200], vmin = imBounds[0], vmax = imBounds[1])
+  fig_3x3median.gca().invert_yaxis()
+  fig_3x3median.colorbar(im)
+
+
+  fig_3x3tophat, ax_3x3topha = createFig()
+  ax_3x3topha.set(xlabel='',  title ='tophat')
+  im = ax_3x3topha.imshow(tophat3x3[370:470, 100:200], vmin = imBounds[0], vmax = imBounds[1])
+  fig_3x3tophat.gca().invert_yaxis()
+  fig_3x3tophat.colorbar(im)
+"""
 plt.show()

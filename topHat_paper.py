@@ -55,23 +55,47 @@ def doPlots(dict, centerMin, centerMax, sideMin, sideMax):
   ax_profile_side.set(xlabel='col')
   ax_profile_side.plot(signalImage[sideMin:sideMax, pos['y_position'][0]], label = 'Unfiltered')
 
+  fig_5x5median, ax_5x5median = createFig()
+  fig_5x5median.gca().invert_yaxis()
+  ax_5x5median.set(xlabel='', title ='')
+
+  fig_5x5tophat, ax_5x5topha = createFig()
+  ax_5x5topha.set(xlabel='',  title ='')
+  fig_5x5tophat.gca().invert_yaxis()
+
+
+  fig_5x5median_zoom, ax_5x5median_zoom = createFig()
+  fig_5x5median_zoom.gca().invert_yaxis()
+  ax_5x5median_zoom.set(xlabel='', title ='median')
+
+  fig_5x5tophat_zoom, ax_5x5topha_zoom = createFig()
+  ax_5x5topha_zoom.set(xlabel='',  title ='tophat')
+
+  #fig_profile5x5, ax_profile5x5 = createFig()
+  #ax_profile5x5.set(xlabel='col')
+  #ax_profile5x5.plot(signalImage[sideMin:sideMax, pos['y_position'][0]], label = 'Unfiltered')
 
   for n, c in zip(kernel_dimensions, colors): 
     filtIm_median = medfilt2d(signalImage,  kernel_size=[n,n])
     filterTopHat = white_tophat(signalImage, size=(n,n))
     filtIm_topHat = signalImage-filterTopHat
 
+    
+    if n == 5: 
+      median5x5 = filtIm_median
+      tophat5x5 = filtIm_topHat
+
+      ax_profile_single.plot(filtIm_topHat[:, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
+      ax_profile_single.plot(filtIm_median[:, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
+      ax2.plot(filtIm_topHat[sideMin:sideMax, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
+      ax2.plot(filtIm_median[sideMin:sideMax, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
+      
+
     ax_hist.hist(np.concatenate(filtIm_topHat), bins=bins, label = 'top hat %dx%d' %(n,n), histtype='step', linewidth = 1.5, linestyle='-', color =c)
     ax_hist.hist(np.concatenate(filtIm_median), bins=bins, label = 'median %dx%d' %(n,n), histtype='step', linewidth = 1.5, linestyle='--', color= c)
 
     ax_profile.plot(filtIm_topHat[:, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
     ax_profile.plot(filtIm_median[:, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
-
-    ax_profile_single.plot(filtIm_topHat[:, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
-    ax_profile_single.plot(filtIm_median[:, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
-    ax2.plot(filtIm_topHat[sideMin:sideMax, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
-    ax2.plot(filtIm_median[sideMin:sideMax, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
-    
 
     ax_profile_center.plot(filtIm_topHat[centerMin:centerMax, pos['y_position'][1]], label = 'top hat %dx%d' %(n,n), linewidth = 1.5, linestyle='-', color= c)  
     ax_profile_center.plot(filtIm_median[centerMin:centerMax, pos['y_position'][1]], label = 'median hat %dx%d' %(n,n), linewidth = 1.5, linestyle='--', color= c)
@@ -92,10 +116,30 @@ def doPlots(dict, centerMin, centerMax, sideMin, sideMax):
   ax_profile_side.legend()
   ax_profile_side.grid()
 
+
+  im = ax_5x5median_zoom.imshow(median5x5[370:470, 100:200], vmin = imBounds[0], vmax = imBounds[1])
+  fig_5x5median_zoom.colorbar(im)
+
+
+  im = ax_5x5topha_zoom.imshow(tophat5x5[370:470, 100:200], vmin = imBounds[0], vmax = imBounds[1])
+  fig_5x5tophat_zoom.colorbar(im)
+
+  im = ax_5x5median.imshow(median5x5, vmin = imBounds[0], vmax = imBounds[1])
+  fig_5x5median.colorbar(im)
+
+
+  im = ax_5x5topha.imshow(tophat5x5, vmin = imBounds[0], vmax = imBounds[1])
+  fig_5x5tophat.colorbar(im)
+
   fig_hist.savefig(outputDir+'filtered_hist_'+dict['name']+'.pdf')
   fig_profile.savefig(outputDir+'profile_'+dict['name']+'.pdf')
   fig_profile_center.savefig(outputDir+'profile_center_'+dict['name']+'.pdf')
   fig_profile_side.savefig(outputDir+'profile_side_'+dict['name']+'.pdf')
+  fig_5x5median.savefig(outputDir+'Image_5x5median_'+dict['name']+'.pdf')
+  fig_5x5median_zoom.savefig(outputDir+'Image_5x5median_zoom_'+dict['name']+'.pdf')
+  fig_5x5tophat.savefig(outputDir+'Image_5x5tophat_'+dict['name']+'.pdf')
+  fig_5x5tophat_zoom.savefig(outputDir+'Image_5x5tophat_zoom_'+dict['name']+'.pdf')
+  fig_profile_single.savefig(outputDir+'profile_5x5_'+dict['name']+'.pdf')
   return 
 
 low_dose_05mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/Flash_2023_06_30/open/t0009.TIF",
@@ -103,7 +147,7 @@ low_dose_05mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/Flash_2023_0
                  "positionFile" : "/home/eleonora/FLASH-Scintillators/Flash_2023_06_30/open/fiberPositions.txt",
                  "dose" : 0.07, #Gy
                  "mm" : 0.5, 
-                 'imBounds' : [0, 1500],
+                 'imBounds' : [0, 2000],
                  'histBounds': [0, 3000],
                  'name' : 'low_dose_05mm',
                  'xticks': np.arange(0, 3000, 500),
@@ -121,13 +165,25 @@ high_dose_05mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/Flash_2023_
                  'rowProfile' : 200}
 
 
-low_dose_3mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/t0034.TIF",
+"""low_dose_3mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/t0034.TIF",
                  "darkFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/t0033.TIF", 
                  "positionFile" : "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/fiberPositions.txt",
                  "dose" : 0.18, #Gy
                  "mm" : 3 ,
                  'imBounds' : [0, 1500],
                  'histBounds': [0, 3000],
+                 'name' : 'low_dose_3mm',
+                 'xticks': np.arange(0, 3000, 500),
+                 'rowProfile' : 200}
+"""
+
+low_dose_3mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/t0032.TIF",
+                 "darkFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/t0029.TIF", 
+                 "positionFile" : "/home/eleonora/FLASH-Scintillators/FLASH_2023_06_29/linearità_2/fiberPositions.txt",
+                 "dose" : 0.82, #Gy
+                 "mm" : 3 ,
+                 'imBounds' : [0, 1500],
+                 'histBounds': [0, 5000],
                  'name' : 'low_dose_3mm',
                  'xticks': np.arange(0, 3000, 500),
                  'rowProfile' : 200}
@@ -145,7 +201,7 @@ high_dose_3mm = {"inputFile" :  "/home/eleonora/FLASH-Scintillators/FLASH_2023_0
                  'rowProfile' : 200}
 
 kernel_dimensions = [3, 5, 9]
-colors = ['orangered', 'green', 'darkorchid']
+colors = ['green', 'orangered', 'darkorchid']
 
 outputDir = '/home/eleonora/Dottorato/articolo_foglio/Figures/Matherials_and_methods/'
 
@@ -162,5 +218,8 @@ for dict in (low_dose_3mm, high_dose_3mm):
   centerMin, centerMax = 160, 260
   sideMin, sideMax = 130, 170
   doPlots(dict, centerMin, centerMax, sideMin, sideMax )
-  
+
+
+
+
 plt.show()

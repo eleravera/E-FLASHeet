@@ -25,7 +25,7 @@ else:
 rangemin= 2055
 rangemax = 20000
 
-plt.imshow(signalImage)
+plt.imshow(signalImage, vmin = rangemin, vmax = rangemax)
 plt.colorbar()
 #signalImage.plotImage(bounds=(rangemin, rangemax))
 #signalImage.histImage(bounds = (rangemin, rangemax))

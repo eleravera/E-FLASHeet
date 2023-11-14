@@ -207,3 +207,19 @@ def createOutputDirectory(path, dirName):
     else: 
         os.mkdir(os.path.dirname(path+dirName))
         return path+dirName
+
+
+
+#center_x = pixel number that you want to put at the center on the X axis 
+#center_y = pixel number that you want to put at the center on the Y axis 
+
+def applyMagnificationFactor(image, magnification, center_x, center_y): 
+
+    extent = [center_x, image.shape[0] + center_x, 
+              center_y, image.shape[1] + center_y]
+
+    extent = extent * magnification
+
+    y = np.linspace(extent[2], extent[3]-1, image.shape[1] )
+    x = np.linspace(extent[0], extent[1]-1, image.shape[0] )
+    return x, y
